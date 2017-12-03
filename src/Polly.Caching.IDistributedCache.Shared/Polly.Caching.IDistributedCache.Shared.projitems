@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>23fa87f9-c77d-4c67-a0b0-2901de51b3ff</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Polly.Caching.IDistributedCache</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CacheProviderHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NetStandardIDistributedCacheByteArrayProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NetStandardIDistributedCacheProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NetStandardIDistributedCacheStringProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TtlHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TtlStrategyHelper.cs" />
+  </ItemGroup>
+</Project>
