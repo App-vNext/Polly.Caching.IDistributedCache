@@ -39,7 +39,7 @@ Polly.Caching.IDistributedCache requires:
 
 # How to use the Polly.Caching.IDistributedCache plugin
 
-These notes assume you are familiar with using the .Net Standard `IDistributedCache` implementations.  For information, see: https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed
+These notes assume you are familiar with using the .Net Standard `IDistributedCache` implementations.  For information, see: https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed .  As described on that page, Microsoft provide a Redis implementation and an SQL server implementation for `IDistributedCache`.
 
 Assuming you have an instance `IDistributedCache distributedCache` in hand (perhaps just configured and instantiated, perhaps provided to local code by Dependency Injection):
 
