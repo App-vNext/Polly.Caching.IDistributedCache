@@ -114,12 +114,20 @@ namespace Polly.Specs.Caching.IDistributedCache
         {
             Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
             string key = "anything";
-            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key))).Returns(Task.FromResult(new byte[0] {  })).Verifiable(); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
+            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.FromResult(new byte[0] {  })).Verifiable(); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
             string got = await provider.GetAsync(key, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(v => v.GetAsync(key), Times.Once);
+            mockDistributedCache.Verify(v => v.GetAsync(key
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ), Times.Once);
         }
 
         [Fact]
@@ -127,13 +135,21 @@ namespace Polly.Specs.Caching.IDistributedCache
         {
             Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
             string key = "anything";
-            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key))).Returns(Task.FromResult(new byte[0] { })).Verifiable(); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
+            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.FromResult(new byte[0] { })); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
             string someOtherKey = Guid.NewGuid().ToString();
             string got = await provider.GetAsync(someOtherKey, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(v => v.GetAsync(someOtherKey), Times.Once);
+            mockDistributedCache.Verify(v => v.GetAsync(someOtherKey
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ), Times.Once);
             got.Should().BeNull();
         }
 
@@ -148,9 +164,9 @@ namespace Polly.Specs.Caching.IDistributedCache
             action.ShouldThrow<OperationCanceledException>();
         }
 
-        #endregion
+#endregion
 
-        #region Put
+#region Put
 
         [Fact]
         public async Task PutAsync_should_put_item_using_passed_nonsliding_ttl()
@@ -161,14 +177,22 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
 
-            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>())).Returns(Task.CompletedTask).Verifiable(); // Because SetStringAsync() is an extension method, we cannot mock it.  We mock SetAsync() instead.  
+            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>()
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.CompletedTask).Verifiable(); // Because SetStringAsync() is an extension method, we cannot mock it.  We mock SetAsync() instead.  
 
             TimeSpan timespan = TimeSpan.FromSeconds(10);
             Ttl ttl = new Ttl(timespan, false);
 
             await provider.PutAsync(key, valueToCache, ttl, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(idc => idc.SetAsync(key, It.IsAny<byte[]>(), It.Is<DistributedCacheEntryOptions>(o => o.AbsoluteExpirationRelativeToNow == timespan)));
+            mockDistributedCache.Verify(idc => idc.SetAsync(key, It.IsAny<byte[]>(), It.Is<DistributedCacheEntryOptions>(o => o.AbsoluteExpirationRelativeToNow == timespan)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ));
         }
 
         [Fact]
@@ -180,13 +204,21 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
 
-            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>())).Returns(Task.CompletedTask).Verifiable(); // Because SetStringAsync() is an extension method, we cannot mock it.  We mock SetAsync() instead.  
+            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>()
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.CompletedTask); // Because SetStringAsync() is an extension method, we cannot mock it.  We mock SetAsync() instead.  
 
             TimeSpan timespan = TimeSpan.FromSeconds(10);
             Ttl ttl = new Ttl(timespan, true);
             await provider.PutAsync(key, valueToCache, ttl, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(idc => idc.SetAsync(key, It.IsAny<byte[]>(), It.Is<DistributedCacheEntryOptions>(o => o.SlidingExpiration == timespan)));
+            mockDistributedCache.Verify(idc => idc.SetAsync(key, It.IsAny<byte[]>(), It.Is<DistributedCacheEntryOptions>(o => o.SlidingExpiration == timespan)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+));
         }
 
         [Fact]
@@ -203,7 +235,7 @@ namespace Polly.Specs.Caching.IDistributedCache
             Func<Task> action = () => provider.PutAsync(key, valueToCache, ttl, new CancellationToken(true), false);
             action.ShouldThrow<OperationCanceledException>();
         }
-        #endregion
+#endregion
     }
     
 }
