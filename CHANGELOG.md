@@ -1,4 +1,8 @@
-# Polly.Caching.IDistributedCache change log
+# Polly.Caching.Distributed change log
+## 1.0.0
+     - Update Polly to V6.0.1.
+     - Update the namespaces to match the other cache providers
+     - Support .net Standard 2.0.
 
 ## 1.0-RC
 
