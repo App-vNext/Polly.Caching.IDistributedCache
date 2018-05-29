@@ -109,7 +109,7 @@ Usage:
 
 ```csharp
 string productId = // ... from somewhere
-string productDetails = await cachePolicy.ExecuteAsync(() => getProductDetails(productId), 
+string productDescription = await cachePolicy.ExecuteAsync(context => getProductDescription(productId), 
     new Context(productId) // productId will also be the cache key used in this execution.
 ); 
 ```
