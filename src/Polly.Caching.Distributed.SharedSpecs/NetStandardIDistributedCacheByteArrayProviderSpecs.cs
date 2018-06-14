@@ -5,10 +5,10 @@ using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Polly.Caching;
-using Polly.Caching.IDistributedCache;
+using Polly.Caching.Distributed;
 using Xunit;
 
-namespace Polly.Specs.Caching.IDistributedCache
+namespace Polly.Specs.Caching.Distributed
 {
     public class NetStandardIDistributedCacheByteArrayProviderSpecs
     {
@@ -118,12 +118,20 @@ namespace Polly.Specs.Caching.IDistributedCache
             Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
             string key = "anything";
             var cachedValue = new byte[] { 0 };
-            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key))).Returns(Task.FromResult(cachedValue)).Verifiable();
+            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.FromResult(cachedValue));
 
             IAsyncCacheProvider<byte[]> provider = mockDistributedCache.Object.AsAsyncCacheProvider<byte[]>();
             byte[] got = await provider.GetAsync(key, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(v => v.GetAsync(key), Times.Once);
+            mockDistributedCache.Verify(v => v.GetAsync(key
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ), Times.Once);
             got.Should().BeSameAs(cachedValue);
         }
 
@@ -133,13 +141,21 @@ namespace Polly.Specs.Caching.IDistributedCache
             Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
             string key = "anything";
             var cachedValue = new byte[] { 0 };
-            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key))).Returns(Task.FromResult(cachedValue)).Verifiable();
+            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.FromResult(cachedValue));
 
             IAsyncCacheProvider<byte[]> provider = mockDistributedCache.Object.AsAsyncCacheProvider<byte[]>();
             string someOtherKey = Guid.NewGuid().ToString();
             byte[] got = await provider.GetAsync(someOtherKey, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(v => v.GetAsync(someOtherKey), Times.Once);
+            mockDistributedCache.Verify(v => v.GetAsync(someOtherKey
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ), Times.Once);
             got.Should().BeNull();
         }
 
@@ -167,14 +183,22 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             IAsyncCacheProvider<byte[]> provider = mockDistributedCache.Object.AsAsyncCacheProvider<byte[]>();
 
-            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.Is<byte[]>(v => v == valueToCache), It.IsAny<DistributedCacheEntryOptions>())).Returns(Task.CompletedTask).Verifiable();
+            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.Is<byte[]>(v => v == valueToCache), It.IsAny<DistributedCacheEntryOptions>()
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.CompletedTask).Verifiable();
 
             TimeSpan timespan = TimeSpan.FromSeconds(10);
             Ttl ttl = new Ttl(timespan, false);
 
             await provider.PutAsync(key, valueToCache, ttl, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(idc => idc.SetAsync(key, valueToCache, It.Is<DistributedCacheEntryOptions>(o => o.AbsoluteExpirationRelativeToNow == timespan)));
+            mockDistributedCache.Verify(idc => idc.SetAsync(key, valueToCache, It.Is<DistributedCacheEntryOptions>(o => o.AbsoluteExpirationRelativeToNow == timespan)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ));
         }
 
         [Fact]
@@ -186,13 +210,21 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             IAsyncCacheProvider<byte[]> provider = mockDistributedCache.Object.AsAsyncCacheProvider<byte[]>();
 
-            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.Is<byte[]>(v => v == valueToCache), It.IsAny<DistributedCacheEntryOptions>())).Returns(Task.CompletedTask).Verifiable();
+            mockDistributedCache.Setup(idc => idc.SetAsync(It.Is<string>(k => k == key), It.Is<byte[]>(v => v == valueToCache), It.IsAny<DistributedCacheEntryOptions>()
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                )).Returns(Task.CompletedTask).Verifiable();
 
             TimeSpan timespan = TimeSpan.FromSeconds(10);
             Ttl ttl = new Ttl(timespan, true);
             await provider.PutAsync(key, valueToCache, ttl, CancellationToken.None, false);
 
-            mockDistributedCache.Verify(idc => idc.SetAsync(key, valueToCache, It.Is<DistributedCacheEntryOptions>(o => o.SlidingExpiration == timespan)));
+            mockDistributedCache.Verify(idc => idc.SetAsync(key, valueToCache, It.Is<DistributedCacheEntryOptions>(o => o.SlidingExpiration == timespan)
+#if NETCOREAPP2_0
+, It.IsAny<CancellationToken>()
+#endif
+                ));
         }
 
         [Fact]

@@ -6,7 +6,7 @@
     <SharedGUID>23fa87f9-c77d-4c67-a0b0-2901de51b3ff</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Polly.Caching.IDistributedCache</Import_RootNamespace>
+    <Import_RootNamespace>Polly.Caching.Distributed</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CacheProviderHelper.cs" />

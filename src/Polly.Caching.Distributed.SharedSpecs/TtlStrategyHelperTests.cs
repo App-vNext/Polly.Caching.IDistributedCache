@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Microsoft.Extensions.Caching.Distributed;
-using Polly.Caching.IDistributedCache;
+using Polly.Caching.Distributed;
 using Polly.Caching;
 using Xunit;
 
@@ -23,7 +23,7 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             ttlStrategy.Should().BeOfType<AbsoluteTtl>();
 
-            Ttl ttl = ttlStrategy.GetTtl(noContext);
+            Ttl ttl = ttlStrategy.GetTtl(noContext, null);
             ttl.SlidingExpiration.Should().BeFalse();
             ttl.Timespan.Should().BeCloseTo(forwardTimeSpan, 10000);
         }
@@ -38,7 +38,7 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             ttlStrategy.Should().BeOfType<RelativeTtl>();
 
-            Ttl ttl = ttlStrategy.GetTtl(noContext);
+            Ttl ttl = ttlStrategy.GetTtl(noContext, null);
             ttl.SlidingExpiration.Should().BeFalse();
             ttl.Timespan.Should().BeCloseTo(forwardTimeSpan, 10000);
         }
@@ -53,7 +53,7 @@ namespace Polly.Specs.Caching.IDistributedCache
 
             ttlStrategy.Should().BeOfType<SlidingTtl>();
 
-            Ttl ttl = ttlStrategy.GetTtl(noContext);
+            Ttl ttl = ttlStrategy.GetTtl(noContext, null);
             ttl.SlidingExpiration.Should().BeTrue();
             ttl.Timespan.Should().BeCloseTo(forwardTimeSpan);
         }

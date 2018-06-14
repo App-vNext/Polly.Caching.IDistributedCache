@@ -1,4 +1,10 @@
-# Polly.Caching.IDistributedCache change log
+# Polly.Caching.Distributed change log
+
+## 2.0.0
+- Provide a single signed package only.
+- Update Polly to V6.0.1.
+- Support .net Standard 2.0.
+- Rename package, and change namespaces, from Polly.Caching.IDistributedCache to Polly.Caching.Distributed, to avoid clashes.
 
 ## 1.0-RC
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Polly.Caching.IDistributedCache
+namespace Polly.Caching.Distributed
 {
     /// <summary>
     /// Provides helper methods for creating a Polly <see cref="ISyncCacheProvider"/> or <see cref="IAsyncCacheProvider"/>  implementation from a <see cref="Microsoft.Extensions.Caching.Distributed.IDistributedCache"/>.

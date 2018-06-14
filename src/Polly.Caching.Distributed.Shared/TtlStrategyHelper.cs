@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System;
 
-namespace Polly.Caching.IDistributedCache
+namespace Polly.Caching.Distributed
 {
     /// <summary>
     /// Provides helper methods for creating a <see cref="Polly.Caching.ITtlStrategy"/> implementation from a <see cref="Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions"/>.

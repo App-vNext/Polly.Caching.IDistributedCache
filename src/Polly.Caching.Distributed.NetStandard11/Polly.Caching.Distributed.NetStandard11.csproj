@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Polly.Caching.IDistributedCache</AssemblyName>
+    <AssemblyName>Polly.Caching.Distributed</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Polly.Caching.IDistributedCache.Net45\Polly.Caching.IDistributedCache.snk</AssemblyOriginatorKeyFile>
     <DefineConstants>TRACE;PORTABLE</DefineConstants>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Polly.Caching.IDistributedCache</RootNamespace>
+    <RootNamespace>Polly.Caching.Distributed</RootNamespace>
     <TargetFramework>netstandard1.1</TargetFramework>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <NuSpecFile Include="$(SolutionDir)Polly.Caching.IDistributedCache.nuspec">
+    <NuSpecFile Include="$(SolutionDir)Polly.Caching.Distributed.nuspec">
       <Visible>False</Visible>
     </NuSpecFile>
   </ItemGroup>
@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Polly" Version="5.4.0" />
+    <PackageReference Include="Polly" Version="6.0.1" />
   </ItemGroup>
-  <Import Project="..\Polly.Caching.IDistributedCache.Shared\Polly.Caching.IDistributedCache.Shared.projitems" Label="Shared" />
+  <Import Project="..\Polly.Caching.Distributed.Shared\Polly.Caching.Distributed.Shared.projitems" Label="Shared" />
 </Project>

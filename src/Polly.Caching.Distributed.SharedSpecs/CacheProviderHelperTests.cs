@@ -1,10 +1,10 @@
 ﻿using System;
 using FluentAssertions;
 using Moq;
-using Polly.Caching.IDistributedCache;
+using Polly.Caching.Distributed;
 using Xunit;
 
-namespace Polly.Specs.Caching.IDistributedCache
+namespace Polly.Specs.Caching.Distributed
 {
     public class CacheProviderHelperTests
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 
-namespace Polly.Caching.IDistributedCache
+namespace Polly.Caching.Distributed
 {
     internal static class InternalTtlHelper
     {
