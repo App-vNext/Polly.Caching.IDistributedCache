@@ -1,5 +1,9 @@
 # Polly.Caching.Distributed change log
 
+## 2.0.1
+- No functional changes
+- Indicate compatibility with Polly &lt; v7
+
 ## 2.0.0
 - Provide a single signed package only.
 - Update Polly to V6.0.1.
