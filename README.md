@@ -26,17 +26,18 @@ This project, Polly.Caching.Distributed, allows you to use Polly's `CachePolicy`
 
 Polly.Caching.Distributed supports .NET Standard 1.1 and .NET Standard 2.0.
 
-## Dependencies
+## Versions and Dependencies
+
+Polly.Caching.Distributed &gt;=v2.0 and &lt;v3 requires:
+
++ [Polly](nuget.org/packages/polly) >= v6.0.1 and &lt;v7.
++ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
 
 Polly.Caching.IDistributedCache &lt;v2.0 requires:
 
 + [Polly](nuget.org/packages/polly) v5.4.0 or above.
 + [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v1.1.2 or above.
 
-Polly.Caching.Distributed &gt;=v2.0 requires:
-
-+ [Polly](nuget.org/packages/polly) v6.0.1 or above.
-+ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
 
 # How to use the Polly.Caching.Distributed plugin
 
@@ -84,7 +85,7 @@ public class Startup
 
         services.AddSingleton<Polly.Caching.IAsyncCacheProvider<string>>(serviceProvider => serviceProvider.GetRequiredService<IDistributedCache>().AsAsyncCacheProvider<string>());
 
-        services.AddSingleton<Polly.Registry.IPolicyRegistry<string>, Polly.Registry.PolicyRegistry>((serviceProvider) =>
+        services.AddSingleton<Polly.Registry.IReadOnlyPolicyRegistry<string>, Polly.Registry.PolicyRegistry>((serviceProvider) =>
         {
             PolicyRegistry registry = new PolicyRegistry();
             registry.Add("myCachePolicy", Policy.CacheAsync<string>(serviceProvider.GetRequiredService<IAsyncCacheProvider<string>>(), TimeSpan.FromMinutes(5)));
@@ -98,7 +99,7 @@ public class Startup
 
 // In a controller, inject the policyRegistry and retrieve the policy:
 // (magic string "myCachePolicy" hard-coded here only to keep the example simple) 
-public MyController(IPolicyRegistry<string> policyRegistry)
+public MyController(IReadOnlyPolicyRegistry<string> policyRegistry)
 {
     var _cachePolicy = policyRegistry.Get<IAsyncPolicy<string>>("myCachePolicy"); 
     // ...
@@ -109,7 +110,7 @@ Usage:
 
 ```csharp
 string productId = // ... from somewhere
-string productDescription = await cachePolicy.ExecuteAsync(context => getProductDescription(productId), 
+string productDescription = await _cachePolicy.ExecuteAsync(context => getProductDescription(productId), 
     new Context(productId) // productId will also be the cache key used in this execution.
 ); 
 ```
