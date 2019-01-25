@@ -172,7 +172,7 @@ namespace Polly.Specs.Caching.Distributed
 
         #endregion
 
-        #region Put
+        #region Put async
 
         [Fact]
         public async Task PutAsync_should_put_item_using_passed_nonsliding_ttl()
