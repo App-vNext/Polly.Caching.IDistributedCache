@@ -9,9 +9,9 @@ using Polly.Caching.Serialization.Json;
 
 namespace Polly.Caching.Distributed.Specs.Integration
 {
-    public class CachePolicyFactory
+    public class MemoryDistributedCachePolicyFactory : ICachePolicyFactory
     {
-        public static (ISyncCacheProvider<TResult>, ISyncPolicy<TResult>) CreateSyncCachePolicy<TCache, TResult>()
+        public (ISyncCacheProvider<TResult>, ISyncPolicy<TResult>) CreateSyncCachePolicy<TCache, TResult>()
         {
             var memoryIDistributedCache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
             ISyncCacheProvider<TResult> memoryIDistributedCacheProvider;
@@ -32,7 +32,7 @@ namespace Polly.Caching.Distributed.Specs.Integration
             return (memoryIDistributedCacheProvider, policy);
         }
 
-        public static (IAsyncCacheProvider<TResult>, IAsyncPolicy<TResult>) CreateAsyncCachePolicy<TCache, TResult>()
+        public (IAsyncCacheProvider<TResult>, IAsyncPolicy<TResult>) CreateAsyncCachePolicy<TCache, TResult>()
         {
             var memoryIDistributedCache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
             IAsyncCacheProvider<TResult> memoryIDistributedCacheProvider;

@@ -6,6 +6,13 @@ namespace Polly.Caching.Distributed.Specs.Integration
 {
     public abstract class CacheRoundTripSpecsBase
     {
+        protected CacheRoundTripSpecsBase(ICachePolicyFactory cachePolicyFactory)
+        {
+            CachePolicyFactory = cachePolicyFactory;
+        }
+
+        protected ICachePolicyFactory CachePolicyFactory { get; }
+
         protected const string OperationKey = "SomeOperationKey";
 
         public abstract Task Should_roundtrip_this_variant_of<TResult>(TResult testValue);

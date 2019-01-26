@@ -1,6 +1,4 @@
-﻿#if !NETCOREAPP1_1
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 
@@ -8,6 +6,10 @@ namespace Polly.Caching.Distributed.Specs.Integration
 {
     public abstract class CacheRoundTripSpecsSyncBase<TCache> : CacheRoundTripSpecsBase
     {
+        protected CacheRoundTripSpecsSyncBase(ICachePolicyFactory cachePolicyFactory) : base(cachePolicyFactory)
+        {
+        }
+
         public override Task Should_roundtrip_this_variant_of<TResult>(TResult testValue)
         {
             // Arrange
@@ -48,5 +50,3 @@ namespace Polly.Caching.Distributed.Specs.Integration
         }
     }
 }
-
-#endif
