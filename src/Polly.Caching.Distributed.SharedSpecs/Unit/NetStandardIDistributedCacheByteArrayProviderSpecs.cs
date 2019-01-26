@@ -9,7 +9,7 @@ using Polly.Caching;
 using Polly.Caching.Distributed;
 using Xunit;
 
-namespace Polly.Specs.Caching.Distributed
+namespace Polly.Specs.Caching.Distributed.Unit
 {
     public class NetStandardIDistributedCacheByteArrayProviderSpecs
     {

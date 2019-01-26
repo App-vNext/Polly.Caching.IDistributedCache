@@ -12,7 +12,7 @@ using Polly.Caching.Distributed;
 using Polly.Caching.Serialization.Json;
 using Xunit;
 
-namespace Polly.Specs.Caching.DistributedNew
+namespace Polly.Specs.Caching.Distributed.Integration
 {
     public class NetStandardIDistributedCacheProvider_CacheRoundTripSpecs_String : NetStandardIDistributedCacheProvider_CacheRoundTripSpecs<string> { }
 
