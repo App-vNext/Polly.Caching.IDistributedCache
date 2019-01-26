@@ -28,14 +28,19 @@ Polly.Caching.Distributed supports .NET Standard 1.1 and .NET Standard 2.0.
 
 ## Versions and Dependencies
 
+Polly.Caching.Distributed &gt;=v3.0 requires:
+
++ [Polly](https://nuget.org/packages/polly) >= v7.0.0.
++ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
+
 Polly.Caching.Distributed &gt;=v2.0 and &lt;v3 requires:
 
-+ [Polly](nuget.org/packages/polly) >= v6.0.1 and &lt;v7.
++ [Polly](https://nuget.org/packages/polly) >= v6.0.1 and &lt;v7.
 + [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
 
 Polly.Caching.IDistributedCache &lt;v2.0 requires:
 
-+ [Polly](nuget.org/packages/polly) v5.4.0 or above.
++ [Polly](https://nuget.org/packages/polly) v5.4.0 or above.
 + [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v1.1.2 or above.
 
 
@@ -129,6 +134,7 @@ For details of changes by release see the [change log](CHANGELOG.md).
 * [@seanfarrow](https://github.com/seanfarrow) and [@reisenberger](https://github.com/reisenberger) - Initial caching architecture in the main Polly repo
 * [@reisenberger](https://github.com/reisenberger) - `IDistributedCache` implementation
 * [@seanfarrow](https://github.com/seanfarrow) - v2.0 update to Signed packages only to correspond with Polly v6.0.1
+* [@reisenberger](https://github.com/reisenberger) - Update to Polly v7.0.0
 
 # Instructions for Contributing
 

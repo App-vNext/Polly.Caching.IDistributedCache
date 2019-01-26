@@ -1,5 +1,9 @@
 # Polly.Caching.Distributed change log
 
+## 3.0.0
+- Allow caching of `default(TResult)`
+- Compatible with Polly &gt;= v7
+
 ## 2.0.1
 - No functional changes
 - Indicate compatibility with Polly &lt; v7
