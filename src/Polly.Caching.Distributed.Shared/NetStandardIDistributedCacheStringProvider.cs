@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -17,16 +16,19 @@ namespace Polly.Caching.Distributed
         public NetStandardIDistributedCacheStringProvider(Microsoft.Extensions.Caching.Distributed.IDistributedCache iDistributedCache) : base(iDistributedCache)
         {
         }
-
+        
         /// <summary>
         /// Gets a value from cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        public override string Get(String key)
+        /// <returns>
+        /// A tuple whose first element is a bool indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache.
+        /// </returns>
+        public override (bool, string) TryGet(string key)
         {
-            string returned = _cache.GetString(key);
-            return returned == null || returned.Length == 0 ? null : returned;
+            string fromCache = _cache.GetString(key);
+            return (fromCache != null, fromCache);
         }
 
         /// <summary>
@@ -41,23 +43,29 @@ namespace Polly.Caching.Distributed
         }
 
         /// <summary>
-        /// Gets a value from the memory cache as part of an asynchronous execution.  <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
+        /// Gets a value from the memory cache as part of an asynchronous execution.
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="cancellationToken">The cancellation token.  </param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context. <para><remarks>For <see cref="NetStandardIDistributedCacheProvider{TCache}"/>, this parameter is irrelevant and is ignored, as the Microsoft.Extensions.Caching.Distributed.IDistributedCache interface does not support it.</remarks></para></param>
-        /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
-        public override async Task<string> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        /// <returns>
+        /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
+        /// the key was found in the cache, and whose second element is the value from the cache.
+        /// </returns>
+        public override async Task<(bool, string)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string returned = await _cache.GetStringAsync(key);
-            return returned == null || returned.Length == 0 ? null : returned; 
+            string fromCache = await _cache.GetStringAsync(key
+#if NETSTANDARD2_0
+                , cancellationToken
+#endif
+                );
+            return (fromCache != null, fromCache);
         }
 
         /// <summary>
         /// Puts the specified value in the cache as part of an asynchronous execution.
-        /// <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="value">The value to put into the cache.</param>
@@ -69,7 +77,11 @@ namespace Polly.Caching.Distributed
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _cache.SetStringAsync(key, value, ttl.ToDistributedCacheEntryOptions());
+            return _cache.SetStringAsync(key, value, ttl.ToDistributedCacheEntryOptions()
+#if NETSTANDARD2_0
+                , cancellationToken
+#endif
+                );
         }
 
     }

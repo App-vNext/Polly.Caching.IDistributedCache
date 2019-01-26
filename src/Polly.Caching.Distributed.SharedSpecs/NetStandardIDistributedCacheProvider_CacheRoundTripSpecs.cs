@@ -65,9 +65,8 @@ namespace Polly.Specs.Caching.DistributedNew
             var (memoryIDistributedCacheProvider, cache) = GetFreshCachePolicy<TResult>();
 
             // Assert - should not be in cache
-            /* v7.0 (bool cacheHit1, object fromCache1) = memoryIDistributedCacheProvider.TryGet(OperationKey);
-             cacheHit1.Should().BeFalse();*/
-            TResult fromCache1 = memoryIDistributedCacheProvider.Get(OperationKey);
+            (bool cacheHit1, TResult fromCache1) = memoryIDistributedCacheProvider.TryGet(OperationKey);
+            cacheHit1.Should().BeFalse();
             fromCache1.Should().Be(default(TResult));
 
             // Act - should execute underlying delegate and place in cache
@@ -83,9 +82,8 @@ namespace Polly.Specs.Caching.DistributedNew
             underlyingDelegateExecuteCount.Should().Be(1);
 
             // Assert - should be in cache
-            /* v7.0 (bool cacheHit2, object fromCache2) = memoryIDistributedCacheProvider.TryGet(OperationKey);
-             cacheHit2.Should().BeTrue();*/
-            TResult fromCache2 = memoryIDistributedCacheProvider.Get(OperationKey);
+            (bool cacheHit2, TResult fromCache2) = memoryIDistributedCacheProvider.TryGet(OperationKey);
+            cacheHit2.Should().BeTrue();
             fromCache2.ShouldBeEquivalentTo(testValue);
 
             // Act - should execute underlying delegate and place in cache

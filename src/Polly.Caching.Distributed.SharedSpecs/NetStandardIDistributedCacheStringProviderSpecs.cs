@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -17,7 +18,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void Should_throw_when_IDistributedCache_is_null()
         {
-            Action configure = () => ((Microsoft.Extensions.Caching.Distributed.IDistributedCache)null).AsSyncCacheProvider<string>();
+            Action configure = () => ((IDistributedCache)null).AsSyncCacheProvider<string>();
 
             configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("iDistributedCache");
 
@@ -26,7 +27,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void Should_not_throw_when_IDistributedCache_is_not_null()
         {
-            Microsoft.Extensions.Caching.Distributed.IDistributedCache mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>().Object;
+            IDistributedCache mockDistributedCache = new Mock<IDistributedCache>().Object;
             Action configure = () => mockDistributedCache.AsSyncCacheProvider<string>();
 
             configure.ShouldNotThrow();
@@ -39,29 +40,35 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void Get_should_return_instance_previously_stored_in_cache()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
-            mockDistributedCache.Setup(idc => idc.Get(It.Is<string>(k => k == key))).Returns(new byte[0]{}).Verifiable(); // Because GetString() is an extension method, we cannot mock it.  We mock Get() instead.  
+            string valueToCache = Guid.NewGuid().ToString();
+            mockDistributedCache.Setup(idc => idc.Get(It.Is<string>(k => k == key))).Returns(Encoding.UTF8.GetBytes(valueToCache)).Verifiable(); // Because GetString() is an extension method, we cannot mock it.  We mock Get() instead.  
 
             ISyncCacheProvider<string> provider = mockDistributedCache.Object.AsSyncCacheProvider<string>();
-            string got = provider.Get(key);
+            (bool got, string fromCache) = provider.TryGet(key);
 
+            got.Should().BeTrue();
             mockDistributedCache.Verify(v => v.Get(key), Times.Once);
+            fromCache.Should().Be(valueToCache);
         }
 
         [Fact]
-        public void Get_should_return_null_on_unknown_key()
+        public void Get_should_return_false_on_unknown_key()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
-            mockDistributedCache.Setup(idc => idc.Get(It.Is<string>(k => k == key))).Verifiable(); // Because GetString() is an extension method, we cannot mock it.  We mock Get() instead.  
+            var cachedValue = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
+            mockDistributedCache.Setup(idc => idc.Get(It.Is<string>(k => k == key))).Returns(cachedValue).Verifiable(); // Because GetString() is an extension method, we cannot mock it.  We mock Get() instead.  
+            mockDistributedCache.Setup(idc => idc.Get(It.Is<string>(k => k != key))).Returns((byte[])null).Verifiable();
 
             ISyncCacheProvider<string> provider = mockDistributedCache.Object.AsSyncCacheProvider<string>();
             string someOtherKey = Guid.NewGuid().ToString();
-            string got = provider.Get(someOtherKey);
+            (bool got, string fromCache) = provider.TryGet(someOtherKey);
 
+            got.Should().BeFalse();
             mockDistributedCache.Verify(v => v.Get(someOtherKey), Times.Once);
-            got.Should().BeNull();
+            fromCache.Should().BeNull();
         }
 
         #endregion
@@ -71,7 +78,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void Put_should_put_item_using_passed_nonsliding_ttl()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
             var valueToCache = "something to cache";
 
@@ -89,7 +96,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void Put_should_put_item_using_passed_sliding_ttl()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
             var valueToCache = "something to cache";
 
@@ -112,55 +119,66 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public async Task GetAsync_should_return_instance_previously_stored_in_cache()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
+            string valueToCache = Guid.NewGuid().ToString();
             mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
 #if NETCOREAPP2_0
 , It.IsAny<CancellationToken>()
 #endif
-                )).Returns(Task.FromResult(new byte[0] {  })).Verifiable(); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
+                )).Returns(Task.FromResult(Encoding.UTF8.GetBytes(valueToCache))).Verifiable(); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
-            string got = await provider.GetAsync(key, CancellationToken.None, false);
+            (bool got, string fromCache) = await provider.TryGetAsync(key, CancellationToken.None, false);
 
+            got.Should().BeTrue();
             mockDistributedCache.Verify(v => v.GetAsync(key
 #if NETCOREAPP2_0
 , It.IsAny<CancellationToken>()
 #endif
                 ), Times.Once);
+            fromCache.Should().Be(valueToCache);
         }
 
         [Fact]
-        public async Task GetAsync_should_return_null_on_unknown_key()
+        public async Task GetAsync_should_return_false_on_unknown_key()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
+            var cachedValue = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
             mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k == key)
 #if NETCOREAPP2_0
 , It.IsAny<CancellationToken>()
 #endif
-                )).Returns(Task.FromResult(new byte[0] { })); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
+            )).Returns(Task.FromResult(cachedValue)); // Because GetStringAsync() is an extension method, we cannot mock it.  We mock GetAsync() instead.  
+
+            mockDistributedCache.Setup(idc => idc.GetAsync(It.Is<string>(k => k != key)
+#if NETCOREAPP2_0
+                , It.IsAny<CancellationToken>()
+#endif
+            )).Returns(Task.FromResult<byte[]>(null)).Verifiable();
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
             string someOtherKey = Guid.NewGuid().ToString();
-            string got = await provider.GetAsync(someOtherKey, CancellationToken.None, false);
+            (bool got, string fromCache) = await provider.TryGetAsync(someOtherKey, CancellationToken.None, false);
 
+            got.Should().BeFalse();
             mockDistributedCache.Verify(v => v.GetAsync(someOtherKey
 #if NETCOREAPP2_0
 , It.IsAny<CancellationToken>()
 #endif
                 ), Times.Once);
-            got.Should().BeNull();
+            fromCache.Should().BeNull();
         }
 
         [Fact]
         public void GetAsync_should_throw_for_cancellation()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
 
             IAsyncCacheProvider<string> provider = mockDistributedCache.Object.AsAsyncCacheProvider<string>();
-            Func<Task> action = () => provider.GetAsync(key, new CancellationToken(true), false);
+            Func<Task> action = () => provider.TryGetAsync(key, new CancellationToken(true), false);
             action.ShouldThrow<OperationCanceledException>();
         }
 
@@ -171,7 +189,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public async Task PutAsync_should_put_item_using_passed_nonsliding_ttl()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
             var valueToCache = "something to cache";
 
@@ -198,7 +216,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public async Task PutAsync_should_put_item_using_passed_sliding_ttl()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
             var valueToCache = "something to cache";
 
@@ -224,7 +242,7 @@ namespace Polly.Specs.Caching.Distributed
         [Fact]
         public void PutAsync_should_throw_for_cancellation()
         {
-            Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache> mockDistributedCache = new Mock<Microsoft.Extensions.Caching.Distributed.IDistributedCache>();
+            Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
             string key = "anything";
             var valueToCache = "something to cache";
             TimeSpan timespan = TimeSpan.FromSeconds(10);
