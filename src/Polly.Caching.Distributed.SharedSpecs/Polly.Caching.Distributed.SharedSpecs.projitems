@@ -9,7 +9,10 @@
     <Import_RootNamespace>Polly.Caching.Distributed.Specs</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Integration\NetStandardIDistributedCacheProvider_CacheRoundTripSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\ByteArraySerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CachePolicyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\CacheProviderHelperTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheByteArrayProviderSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheStringProviderSpecs.cs" />
