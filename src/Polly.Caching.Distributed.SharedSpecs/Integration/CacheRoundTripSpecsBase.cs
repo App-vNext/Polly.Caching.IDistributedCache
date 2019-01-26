@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Polly.Caching.Distributed.Specs.Integration
@@ -7,48 +8,48 @@ namespace Polly.Caching.Distributed.Specs.Integration
     {
         protected const string OperationKey = "SomeOperationKey";
 
-        public abstract void Should_roundtrip_this_variant_of<TResult>(TResult testValue);
+        public abstract Task Should_roundtrip_this_variant_of<TResult>(TResult testValue);
 
         [Theory]
         [MemberData(nameof(SampleClassData))]
-        public void Should_roundtrip_all_variants_of_reference_type(SampleClass testValue)
+        public async Task Should_roundtrip_all_variants_of_reference_type(SampleClass testValue)
         {
-            Should_roundtrip_this_variant_of<SampleClass>(testValue);
+            await Should_roundtrip_this_variant_of<SampleClass>(testValue);
         }
 
         [Theory]
         [MemberData(nameof(SampleStringData))]
-        public void Should_roundtrip_all_variants_of_string(String testValue)
+        public async Task Should_roundtrip_all_variants_of_string(String testValue)
         {
-            Should_roundtrip_this_variant_of<String>(testValue);
+            await Should_roundtrip_this_variant_of<String>(testValue);
         }
 
         [Theory]
         [MemberData(nameof(SampleNumericData))]
-        public void Should_roundtrip_all_variants_of_numeric(int testValue)
+        public async Task Should_roundtrip_all_variants_of_numeric(int testValue)
         {
-            Should_roundtrip_this_variant_of<int>(testValue);
+            await Should_roundtrip_this_variant_of<int>(testValue);
         }
 
         [Theory]
         [MemberData(nameof(SampleEnumData))]
-        public void Should_roundtrip_all_variants_of_enum(SampleEnum testValue)
+        public async Task Should_roundtrip_all_variants_of_enum(SampleEnum testValue)
         {
-            Should_roundtrip_this_variant_of<SampleEnum>(testValue);
+            await Should_roundtrip_this_variant_of<SampleEnum>(testValue);
         }
 
         [Theory]
         [MemberData(nameof(SampleBoolData))]
-        public void Should_roundtrip_all_variants_of_bool(bool testValue)
+        public async Task Should_roundtrip_all_variants_of_bool(bool testValue)
         {
-            Should_roundtrip_this_variant_of<bool>(testValue);
+            await Should_roundtrip_this_variant_of<bool>(testValue);
         }
 
         [Theory]
         [MemberData(nameof(SampleNullableBoolData))]
-        public void Should_roundtrip_all_variants_of_nullable_bool(bool? testValue)
+        public async Task Should_roundtrip_all_variants_of_nullable_bool(bool? testValue)
         {
-            Should_roundtrip_this_variant_of<bool?>(testValue);
+            await Should_roundtrip_this_variant_of<bool?>(testValue);
         }
 
         public static TheoryData<SampleClass> SampleClassData =>
