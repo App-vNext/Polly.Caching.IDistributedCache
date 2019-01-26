@@ -12,7 +12,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Integration\ByteArraySerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Integration\CachePolicyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsSyncBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Sync_ByteArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Sync_String.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\CacheProviderHelperTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheByteArrayProviderSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheStringProviderSpecs.cs" />
