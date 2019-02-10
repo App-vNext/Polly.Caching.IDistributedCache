@@ -30,17 +30,23 @@ namespace Polly.Caching.Distributed
         /// Gets a value from cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        public abstract TCache Get(string key);
+        /// <returns>
+        /// A tuple whose first element is a value indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache (default(TResult) if not found).
+        /// </returns>
+        public abstract (bool, TCache) TryGet(string key);
 
         /// <summary>
-        /// Gets a value from the memory cache as part of an asynchronous execution.  <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
+        /// Gets a value from the memory cache as part of an asynchronous execution.
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="cancellationToken">The cancellation token.  </param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context. <para><remarks>For <see cref="NetStandardIDistributedCacheProvider{TCache}"/>, this parameter is irrelevant and is ignored, as the Microsoft.Extensions.Caching.Distributed.IDistributedCache interface does not support it.</remarks></para></param>
-        /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
-        public abstract Task<TCache> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+        /// <returns>
+        /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
+        /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
+        /// </returns>
+        public abstract Task<(bool, TCache)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
         /// <summary>
         /// Puts the specified value in the cache.
@@ -52,7 +58,6 @@ namespace Polly.Caching.Distributed
 
         /// <summary>
         /// Puts the specified value in the cache as part of an asynchronous execution.
-        /// <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="value">The value to put into the cache.</param>

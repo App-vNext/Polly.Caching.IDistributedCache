@@ -7,7 +7,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
-    <DefineConstants>TRACE;DEBUG;NETCOREAPP1_1;NETCOREAPP1_1;PORTABLE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;PORTABLE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -16,11 +16,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="Polly.Caching.Serialization.Json" Version="3.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <PackageReference Include="Polly" Version="6.0.1" />
+    <PackageReference Include="Polly" Version="7.0.0" />
 
   </ItemGroup>
   <ItemGroup>

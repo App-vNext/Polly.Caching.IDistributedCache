@@ -9,8 +9,6 @@ namespace Polly.Caching.Distributed
     /// </summary>
     public class NetStandardIDistributedCacheByteArrayProvider : NetStandardIDistributedCacheProvider<byte[]>
     {
-        private readonly byte[] Empty = new byte[0];
-
         /// <summary>
         /// Initializes a new instance of the <see cref="NetStandardIDistributedCacheByteArrayProvider"/> class.
         /// </summary>
@@ -23,13 +21,16 @@ namespace Polly.Caching.Distributed
         /// Gets a value from cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        public override byte[] Get(String key)
+        /// <returns>
+        /// A tuple whose first element is a bool indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache.
+        /// </returns>
+        public override (bool, byte[]) TryGet(string key)
         {
-            byte[] returned = _cache.Get(key);
-            return returned == null || returned.Length == 0 ? null : returned; // Because Polly CachePolicy expects providers to return "no value held" as null.
+            byte[] fromCache = _cache.Get(key);
+            return (fromCache != null, fromCache);
         }
-        
+
         /// <summary>
         /// Puts the specified value in the cache.
         /// </summary>
@@ -38,26 +39,33 @@ namespace Polly.Caching.Distributed
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         public override void Put(string key, byte[] value, Ttl ttl)
         {
-            _cache.Set(key, value ?? Empty, ttl.ToDistributedCacheEntryOptions());
+            _cache.Set(key, value, ttl.ToDistributedCacheEntryOptions());
         }
 
         /// <summary>
-        /// Gets a value from the memory cache as part of an asynchronous execution.  <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
+        /// Gets a value from the memory cache as part of an asynchronous execution.
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="cancellationToken">The cancellation token.  </param>
-        /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context. <para><remarks>For <see cref="NetStandardIDistributedCacheByteArrayProvider"/>, this parameter is irrelevant and is ignored, as the Microsoft.Extensions.Caching.Distributed.IDistributedCache interface does not support it.</remarks></para></param>
-        /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
-        public override async Task<byte[]> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context. <para><remarks>For <see cref="NetStandardIDistributedCacheProvider{TCache}"/>, this parameter is irrelevant and is ignored, as the Microsoft.Extensions.Caching.Distributed.IDistributedCache interface does not support it.</remarks></para></param>
+        /// <returns>
+        /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
+        /// the key was found in the cache, and whose second element is the value from the cache.
+        /// </returns>
+        public override async Task<(bool, byte[])> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            byte[] returned = await _cache.GetAsync(key);
-            return returned == null || returned.Length == 0 ? null : returned; // Because Polly CachePolicy expects providers to return "no value held" as null.
+
+            byte[] fromCache = await _cache.GetAsync(key
+#if NETSTANDARD2_0
+                , cancellationToken
+#endif
+            );
+            return (fromCache != null, fromCache);
         }
 
         /// <summary>
         /// Puts the specified value in the cache as part of an asynchronous execution.
-        /// <para><remarks>The implementation is synchronous as there is no advantage to an asynchronous implementation for an in-memory cache.</remarks></para>
         /// </summary>
         /// <param name="key">The cache key.</param>
         /// <param name="value">The value to put into the cache.</param>
@@ -69,7 +77,11 @@ namespace Polly.Caching.Distributed
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _cache.SetAsync(key, value ?? Empty, ttl.ToDistributedCacheEntryOptions());
+            return _cache.SetAsync(key, value, ttl.ToDistributedCacheEntryOptions()
+#if NETSTANDARD2_0
+                , cancellationToken
+#endif
+            );
         }
 
 

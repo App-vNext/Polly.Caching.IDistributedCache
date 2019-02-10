@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.0.2" />
-    <PackageReference Include="Polly" Version="6.0.1" />
+    <PackageReference Include="Polly" Version="7.0.0" />
   </ItemGroup>
   <Import Project="..\Polly.Caching.Distributed.Shared\Polly.Caching.Distributed.Shared.projitems" Label="Shared" />
 </Project>

@@ -9,9 +9,19 @@
     <Import_RootNamespace>Polly.Caching.Distributed.Specs</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CacheProviderHelperTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NetStandardIDistributedCacheByteArrayProviderSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NetStandardIDistributedCacheStringProviderSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TtlStrategyHelperTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\ByteArraySerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\MemoryDistributedCachePolicyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsAsyncBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecsSyncBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Async_ByteArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Async_String.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Sync_ByteArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\CacheRoundTripSpecs_NetStandardIDistributedCacheProvider_Sync_String.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Integration\ICachePolicyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\CacheProviderHelperTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheByteArrayProviderSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\NetStandardIDistributedCacheStringProviderSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unit\TtlStrategyHelperTests.cs" />
   </ItemGroup>
 </Project>

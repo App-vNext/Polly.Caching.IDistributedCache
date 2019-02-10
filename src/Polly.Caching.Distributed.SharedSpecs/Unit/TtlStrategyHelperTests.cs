@@ -6,7 +6,7 @@ using Polly.Caching.Distributed;
 using Polly.Caching;
 using Xunit;
 
-namespace Polly.Specs.Caching.IDistributedCache
+namespace Polly.Specs.Caching.Distributed.Unit
 {
     public class TtlStrategyHelperTests
     {
