@@ -72,7 +72,7 @@ var cachePolicy = Policy.CacheAsync<byte[]>(distributedCache.AsAsyncCacheProvide
 
 ```
 
-Configuration via DI in ASPNET Core:
+## Configuration via DI in ASPNET Core:
 
 ```csharp
 // In this example we choose to pass a whole PolicyRegistry by dependency injection rather than the individual policy, on the assumption the webapp will probably use multiple policies across the app.
@@ -111,7 +111,65 @@ public MyController(IReadOnlyPolicyRegistry<string> policyRegistry)
 }
 ```
 
-Usage:
+## Automatically serializing more complex type
+
+The raw cache provider `Polly.Caching.IDistributedCache` allows you to cache items of type `byte[]` or `string` as those are the native formats supported by [`Microsoft.Extensions.Caching.Distributed.IDistributedCache`](https://docs.microsoft.com/en-gb/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache).  However, Polly also allows you to automatically serialize more complex types.
+
+The package `Polly.Caching.Serialization.Json` ([github](https://github.com/App-vNext/Polly.Caching.Serialization.Json); [nuget](https://www.nuget.org/packages/Polly.Caching.Serialization.Json)) is a Polly [`ICacheItemSerializer<TResult, string>`](https://github.com/App-vNext/Polly/wiki/Implementing-cache-serializers#using-a-serializer-with-the-polly-cachepolicy) to serialize any type for use with `Polly.Caching.IDistributedCache`.  
+
+Configuration in .NET Core:
+
+```csharp
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDistributedRedisCache(options =>
+        {
+            options.Configuration = "localhost"; // or whatever
+            options.InstanceName = "SampleInstance";
+        });
+
+        // Obtain a Newtonsoft.Json.JsonSerializerSettings defining any settings to use for serialization
+        // (could alternatively be obtained from a factory by DI)
+        var serializerSettings = new JsonSerializerSettings()
+        {
+            // Any configuration options
+        };
+
+        // Register a Polly cache provider for caching ProductDetails entities, using the IDistributedCache instance and a Polly.Caching.Serialization.Json.JsonSerializer.
+        // (ICacheItemSerializer<ProductDetails, string> could alternatively be obtained from a factory by DI)
+        services.AddSingleton<Polly.Caching.IAsyncCacheProvider<ProductDetails>>(serviceProvider =>
+            serviceProvider
+                .GetRequiredService<IDistributedCache>()
+                .AsAsyncCacheProvider<string>()
+                .WithSerializer<ProductDetails, string>(
+                    new Polly.Caching.Serialization.Json.JsonSerializer<ProductDetails>(serializerSettings)
+                );
+
+        // Register a Polly cache policy for caching ProductDetails entities, using that IDistributedCache instance.
+        services.AddSingleton<Polly.Registry.IReadOnlyPolicyRegistry<string>, Polly.Registry.PolicyRegistry>((serviceProvider) =>
+        {
+            PolicyRegistry registry = new PolicyRegistry();
+            registry.Add("productsCachePolicy", Policy.CacheAsync<ProductDetails>(serviceProvider.GetRequiredService<IAsyncCacheProvider<ProductDetails>>(), TimeSpan.FromMinutes(5)));
+
+            return registry;
+        });
+
+        // ...
+    }
+}
+
+// In a controller, inject the policyRegistry and retrieve the policy:
+// (magic string "productsCachePolicy" hard-coded here only to keep the example simple) 
+public MyController(IReadOnlyPolicyRegistry<string> policyRegistry)
+{
+    var _cachePolicy = policyRegistry.Get<IAsyncPolicy<ProductDetails>>("productsCachePolicy"); 
+    // ...
+}
+```
+
+## Usage at the point of consumption
 
 ```csharp
 string productId = // ... from somewhere
