@@ -1,12 +1,12 @@
 # Polly.Caching.Distributed
 
-This repo contains the `Microsoft.Extensions.Caching.Distributed.IDistributedCache` provider for the [Polly](https://github.com/App-vNext/Polly) [Cache policy](https://github.com/App-vNext/Polly/wiki/Cache).  The current version targets .NET Standard 1.1 and .NET Standard 2.0.
+This repo contains the `Microsoft.Extensions.Caching.Distributed.IDistributedCache` provider for the [Polly](https://github.com/App-vNext/Polly) [Cache policy](https://github.com/App-vNext/Polly/wiki/Cache).  The current version targets .NET Standard 1.1, .NET Standard 2.0 and .NET Standard 2.1.
 
 [![NuGet version](https://badge.fury.io/nu/Polly.Caching.Distributed.svg)](https://badge.fury.io/nu/Polly.Caching.Distributed) [![Build status](https://ci.appveyor.com/api/projects/status/pgd89nfdr9u4ig8m?svg=true)](https://ci.appveyor.com/project/joelhulen/polly-caching-Distributed) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
 
 ## What is Polly?
 
-[Polly](https://github.com/App-vNext/Polly) is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Cache aside and Fallback in a fluent and thread-safe manner. Polly targets .NET Standard 1.1 and .NET Standard 2.0. 
+[Polly](https://github.com/App-vNext/Polly) is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Cache aside and Fallback in a fluent and thread-safe manner. 
 
 Polly is a member of the [.NET Foundation](https://www.dotnetfoundation.org/about).
 
@@ -24,24 +24,27 @@ This project, Polly.Caching.Distributed, allows you to use Polly's `CachePolicy`
 
 # Supported targets
 
-Polly.Caching.Distributed supports .NET Standard 1.1 and .NET Standard 2.0.
+Polly.Caching.Distributed &gt;= v3.0.1 supports .NET Standard 1.1, .NET Standard 2.0 and .NET Standard 2.1.
 
-## Versions and Dependencies
+Polly.Caching.Distributed &lt; v3.0.1 supports .NET Standard 1.1 and .NET Standard 2.0.
 
-Polly.Caching.Distributed &gt;=v3.0 requires:
+## Dependency compatibility with Polly
+
+Polly.Caching.Distributed &gt;=v3.0.1 requires:
+
++ [Polly](https://nuget.org/packages/polly) >= v7.1.1.
+
+Polly.Caching.Distributed v3.0.0 requires:
 
 + [Polly](https://nuget.org/packages/polly) >= v7.0.0.
-+ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
 
 Polly.Caching.Distributed &gt;=v2.0 and &lt;v3 requires:
 
 + [Polly](https://nuget.org/packages/polly) >= v6.0.1 and &lt;v7.
-+ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v2.0.2 or above.
 
 Polly.Caching.IDistributedCache &lt;v2.0 requires:
 
 + [Polly](https://nuget.org/packages/polly) v5.4.0 or above.
-+ [Microsoft.Extensions.Caching.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Abstractions/) v1.1.2 or above.
 
 
 # How to use the Polly.Caching.Distributed plugin
