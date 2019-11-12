@@ -1,12 +1,9 @@
 ﻿using System;
 using FluentAssertions;
-using Moq;
 using Microsoft.Extensions.Caching.Distributed;
-using Polly.Caching.Distributed;
-using Polly.Caching;
 using Xunit;
 
-namespace Polly.Specs.Caching.Distributed.Unit
+namespace Polly.Caching.Distributed.Specs.Unit
 {
     public class TtlStrategyHelperTests
     {

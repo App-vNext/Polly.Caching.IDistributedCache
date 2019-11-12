@@ -1,10 +1,9 @@
 ﻿using System;
 using FluentAssertions;
 using Moq;
-using Polly.Caching.Distributed;
 using Xunit;
 
-namespace Polly.Specs.Caching.Distributed.Unit
+namespace Polly.Caching.Distributed.Specs.Unit
 {
     public class CacheProviderHelperTests
     {
@@ -15,7 +14,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsSyncCacheProvider<string>();
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -25,7 +24,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsSyncCacheProvider<byte[]>();
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -35,7 +34,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsAsyncCacheProvider<string>();
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -45,7 +44,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsAsyncCacheProvider<byte[]>();
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -55,7 +54,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsSyncCacheProvider<object>();
 
-            configure.ShouldThrow<ArgumentException>();
+            configure.Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -65,7 +64,7 @@ namespace Polly.Specs.Caching.Distributed.Unit
 
             Action configure = () => mockDistributedCache.Object.AsAsyncCacheProvider<object>();
 
-            configure.ShouldThrow<ArgumentException>();
+            configure.Should().Throw<ArgumentException>();
         }
 
     }

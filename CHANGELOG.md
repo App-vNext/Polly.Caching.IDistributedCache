@@ -1,5 +1,14 @@
 # Polly.Caching.Distributed change log
 
+## 3.0.1
+- No functional changes
+- Updated Polly dependency to latest, v7.1.1
+- Consolidated solution and fixed build
+- Add SourceLink support
+- Added NetStandard 2.1 target (for .NET Core3.0 consumption)
+- Added test runs in netcoreapp3.0; .NET Framework 4.6.1; and .NET Framework 4.7.2
+- Updated FluentAssertions and xUnit dependencies
+
 ## 3.0.0
 - Allow caching of `default(TResult)`
 - Compatible with Polly &gt;= v7
